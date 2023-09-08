@@ -1,1 +1,0 @@
-{"version":1,"defects":{"StaleContentNotifierTest::test_scn_get_stale_content":3},"times":{"StaleContentNotifierTest::test_scn_get_stale_content":0.06,"StaleContentNotifierTest::test_option_functions":0.05}}

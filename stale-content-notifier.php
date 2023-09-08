@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:     Stale Content Notifier
- * Description:     WP plugin to keep content up to date by receiving notifications regarding stale content
+ * Description:     Keep content up to date by notifing admin users of stale content
  * Plugin URI:      https://plugin-bakery.com/stale-content-notifier
  * Author:          Alen Ribic
  * Author URI:      https://plugin-bakery.com
