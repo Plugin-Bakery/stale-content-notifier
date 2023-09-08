@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:     Stale Content Notifier
- * Description:     Keep content up to date by notifying admin users of stale content
+ * Description:     Automatically notify authors and administrators about posts that haven't been updated for a specified period.
  * Plugin URI:      https://plugin-bakery.com/stale-content-notifier
  * Author:          Alen Ribic
  * Author URI:      https://plugin-bakery.com
