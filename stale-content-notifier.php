@@ -13,6 +13,8 @@
  * @package         Stale_Content_Notifier
  */
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 /**
  * Core Functions
  */
