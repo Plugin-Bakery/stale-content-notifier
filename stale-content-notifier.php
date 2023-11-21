@@ -16,24 +16,24 @@
 /**
  * Core Functions
  */
-function scn_activate()
+function scntfy_activate()
 {
     // Check if the stale timeframe option exists, and if not, set a default
-    if (!get_option('scn_stale_timeframe')) {
-        update_option('scn_stale_timeframe', '90_days'); // Default to 90 days
+    if (!get_option('scntfy_stale_timeframe')) {
+        update_option('scntfy_stale_timeframe', '90_days'); // Default to 90 days
     }
 }
-register_activation_hook(__FILE__, 'scn_activate');
+register_activation_hook(__FILE__, 'scntfy_activate');
 
-function scn_deactivate()
+function scntfy_deactivate()
 {
     // Here, you can put any logic that needs to run when your plugin is deactivated.
     // For instance, if you wanted to delete the option upon deactivation (not recommended, just an example):
-    // delete_option('scn_stale_timeframe');
+    // delete_option('scntfy_stale_timeframe');
 }
-register_deactivation_hook(__FILE__, 'scn_deactivate');
+register_deactivation_hook(__FILE__, 'scntfy_deactivate');
 
-function scn_get_stale_content($timeframe = '90 days')
+function scntfy_get_stale_content($timeframe = '90 days')
 {
 
     // Set up the arguments for WP Query
@@ -62,10 +62,10 @@ function scn_get_stale_content($timeframe = '90 days')
 /**
  * Admin Notices
  */
-function scn_display_admin_notice()
+function scntfy_display_admin_notice()
 {
     // Use our previous function to get stale content
-    $stale_posts = scn_get_stale_content(get_option('scn_days_until_stale') . ' days');
+    $stale_posts = scntfy_get_stale_content(get_option('scntfy_days_until_stale') . ' days');
 
     // If there's stale content, display an admin notice
     if ($stale_posts && is_array($stale_posts) && count($stale_posts) > 0) {
@@ -73,7 +73,7 @@ function scn_display_admin_notice()
 
         $base_url = admin_url('tools.php');
         $params = array(
-            'page' => 'scn_tools',
+            'page' => 'scntfy_tools',
             'tab' => 'stale_content'
         );
         $link = add_query_arg($params, $base_url);
@@ -95,33 +95,33 @@ function scn_display_admin_notice()
             . esc_url($link) . '>View stale content</a></p></div>';
     }
 }
-add_action('admin_notices', 'scn_display_admin_notice');
+add_action('admin_notices', 'scntfy_display_admin_notice');
 
 /**
  * Email Notifications
  */
-function scn_schedule_stale_content_check()
+function scntfy_schedule_stale_content_check()
 {
-    if (!wp_next_scheduled('scn_daily_stale_content_check')) {
-        wp_schedule_event(time(), 'daily', 'scn_daily_stale_content_check');
+    if (!wp_next_scheduled('scntfy_daily_stale_content_check')) {
+        wp_schedule_event(time(), 'daily', 'scntfy_daily_stale_content_check');
     }
 }
-add_action('wp', 'scn_schedule_stale_content_check');
+add_action('wp', 'scntfy_schedule_stale_content_check');
 
-function scn_send_stale_content_email()
+function scntfy_send_stale_content_email()
 {
-    if (get_option('scn_enable_email_notifications') != '1') {
+    if (get_option('scntfy_enable_email_notifications') != '1') {
         return;
     }
 
     // Fetch the stale content
-    $stale_posts = scn_get_stale_content(get_option('scn_days_until_stale') . ' days');
+    $stale_posts = scntfy_get_stale_content(get_option('scntfy_days_until_stale') . ' days');
 
     if ($stale_posts && is_array($stale_posts) && count($stale_posts) > 0) {
         $count = count($stale_posts);
 
         // Define the email subject and body
-        $to = get_option('scn_notification_email', get_option('admin_email'));
+        $to = get_option('scntfy_notification_email', get_option('admin_email'));
         $headers = 'From: WordPress <' . get_option('admin_email') . ">\r\n";
         $subject = sprintf(__('You have %s stale posts/pages on your website', 'stale-content-notifier'), $count);
         $body = "Hello,\n\n";
@@ -138,7 +138,7 @@ function scn_send_stale_content_email()
         wp_mail($to, $subject, $body, $headers);
     }
 }
-add_action('scn_daily_stale_content_check', 'scn_send_stale_content_email');
+add_action('scntfy_daily_stale_content_check', 'scntfy_send_stale_content_email');
 
 
 /**
@@ -148,7 +148,7 @@ if (!class_exists('WP_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 }
 
-class SCN_Stale_Content_Table extends WP_List_Table
+class SCNTFY_Stale_Content_Table extends WP_List_Table
 {
 
     function __construct()
@@ -178,7 +178,7 @@ class SCN_Stale_Content_Table extends WP_List_Table
             'post_status'   => 'publish', // Only published posts/pages
             'date_query'    => array(
                 array(
-                    'before' => sprintf('-%d days', get_option('scn_days_until_stale', 90))
+                    'before' => sprintf('-%d days', get_option('scntfy_days_until_stale', 90))
                 ),
             ),
             'posts_per_page' => -1,
@@ -203,19 +203,19 @@ class SCN_Stale_Content_Table extends WP_List_Table
 /**
  * Admin Pages (Settings & Tools)
  */
-function scn_add_to_tools_menu()
+function scntfy_add_to_tools_menu()
 {
     add_management_page(
         'Stale Content Notifier',       // Page title
         'Stale Content Notifier',       // Menu title
         'manage_options',               // Capability
-        'scn_tools',                    // Menu slug
-        'scn_display_tools_page'        // Callback function
+        'scntfy_tools',                    // Menu slug
+        'scntfy_display_tools_page'        // Callback function
     );
 }
-add_action('admin_menu', 'scn_add_to_tools_menu');
+add_action('admin_menu', 'scntfy_add_to_tools_menu');
 
-function scn_display_tools_page()
+function scntfy_display_tools_page()
 {
     // Check user capabilities
     if (!current_user_can('manage_options')) {
@@ -225,23 +225,23 @@ function scn_display_tools_page()
     // Save settings if form is submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Use nonces for security
-        check_admin_referer('scn_save_settings');
+        check_admin_referer('scntfy_save_settings');
 
         // Validate and save the settings
-        if (isset($_POST['scn_days_until_stale'])) {
-            $days_until_stale = sanitize_text_field($_POST['scn_days_until_stale']);
+        if (isset($_POST['scntfy_days_until_stale'])) {
+            $days_until_stale = sanitize_text_field($_POST['scntfy_days_until_stale']);
             if (is_numeric($days_until_stale)) {
-                update_option('scn_days_until_stale', intval($days_until_stale));
+                update_option('scntfy_days_until_stale', intval($days_until_stale));
             }
         }
 
-        $enable_email_notifications = isset($_POST['scn_enable_email_notifications']) ? '1' : '0';
-        update_option('scn_enable_email_notifications', $enable_email_notifications);
+        $enable_email_notifications = isset($_POST['scntfy_enable_email_notifications']) ? '1' : '0';
+        update_option('scntfy_enable_email_notifications', $enable_email_notifications);
 
-        if (isset($_POST['scn_notification_email'])) {
-            $notification_email = sanitize_email($_POST['scn_notification_email']);
+        if (isset($_POST['scntfy_notification_email'])) {
+            $notification_email = sanitize_email($_POST['scntfy_notification_email']);
             if (is_email($notification_email)) {
-                update_option('scn_notification_email', $notification_email);
+                update_option('scntfy_notification_email', $notification_email);
             }
         }
 
@@ -250,9 +250,9 @@ function scn_display_tools_page()
     }
 
     // Load current setting values
-    $days_until_stale = get_option('scn_days_until_stale', 90); // Default to 90 days
-    $enable_email_notifications = get_option('scn_enable_email_notifications', '1'); // Default to enabled
-    $notification_email = get_option('scn_notification_email', get_option('admin_email'));
+    $days_until_stale = get_option('scntfy_days_until_stale', 90); // Default to 90 days
+    $enable_email_notifications = get_option('scntfy_enable_email_notifications', '1'); // Default to enabled
+    $notification_email = get_option('scntfy_notification_email', get_option('admin_email'));
 
     // Display the settings form
     $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'stale_content';
@@ -260,14 +260,14 @@ function scn_display_tools_page()
     <div class="wrap">
         <h2>Stale Content Notifier</h2>
         <h2 class="nav-tab-wrapper">
-            <a href="?page=scn_tools&tab=stale_content" class="nav-tab <?php echo $active_tab == 'stale_content' ? 'nav-tab-active' : ''; ?>">Stale Content</a>
-            <a href="?page=scn_tools&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
+            <a href="?page=scntfy_tools&tab=stale_content" class="nav-tab <?php echo $active_tab == 'stale_content' ? 'nav-tab-active' : ''; ?>">Stale Content</a>
+            <a href="?page=scntfy_tools&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
         </h2>
 
         <?php if ($active_tab == 'stale_content') : ?>
             <!-- STALE CONTENT TAB CONTENT -->
             <?php
-            $staleContentTable = new SCN_Stale_Content_Table();
+            $staleContentTable = new SCNTFY_Stale_Content_Table();
             $staleContentTable->prepare_items();
             $staleContentTable->display();
             ?>
@@ -276,22 +276,22 @@ function scn_display_tools_page()
         <?php if ($active_tab == 'settings') : ?>
             <!-- SETTINGS TAB CONTENT -->
             <form method="post" action="">
-                <?php wp_nonce_field('scn_save_settings'); ?>
+                <?php wp_nonce_field('scntfy_save_settings'); ?>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><label for="scn_days_until_stale">Days Until Content is Stale:</label></th>
-                        <td><input type="number" id="scn_days_until_stale" name="scn_days_until_stale" value="<?php echo esc_attr($days_until_stale); ?>" /></td>
+                        <th scope="row"><label for="scntfy_days_until_stale">Days Until Content is Stale:</label></th>
+                        <td><input type="number" id="scntfy_days_until_stale" name="scntfy_days_until_stale" value="<?php echo esc_attr($days_until_stale); ?>" /></td>
                     </tr>
                     <tr>
                         <th scope="row">Enable Email Notifications:</th>
                         <td>
-                            <input type="checkbox" id="scn_enable_email_notifications" name="scn_enable_email_notifications" <?php checked($enable_email_notifications, '1'); ?> />
-                            <label for="scn_enable_email_notifications">Enable</label>
+                            <input type="checkbox" id="scntfy_enable_email_notifications" name="scntfy_enable_email_notifications" <?php checked($enable_email_notifications, '1'); ?> />
+                            <label for="scntfy_enable_email_notifications">Enable</label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><label for="scn_notification_email">Notification Email Address:</label></th>
-                        <td><input type="email" id="scn_notification_email" name="scn_notification_email" value="<?php echo esc_attr($notification_email); ?>" /></td>
+                        <th scope="row"><label for="scntfy_notification_email">Notification Email Address:</label></th>
+                        <td><input type="email" id="scntfy_notification_email" name="scntfy_notification_email" value="<?php echo esc_attr($notification_email); ?>" /></td>
                     </tr>
                 </table>
                 <p class="submit">

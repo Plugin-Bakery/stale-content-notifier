@@ -21,27 +21,27 @@ class StaleContentNotifierTest extends WP_UnitTestCase
         }
     }
 
-    function test_scn_get_stale_content()
+    function test_scntfy_get_stale_content()
     {
-        $stale_posts = scn_get_stale_content('3 months');
+        $stale_posts = scntfy_get_stale_content('3 months');
         $this->assertCount(10, $stale_posts);
 
-        $stale_posts = scn_get_stale_content('60 days');
+        $stale_posts = scntfy_get_stale_content('60 days');
         $this->assertCount(15, $stale_posts);
 
-        $stale_posts = scn_get_stale_content('6 months');
+        $stale_posts = scntfy_get_stale_content('6 months');
         $this->assertEmpty($stale_posts);
     }
 
     function test_option_functions()
     {
-        update_option('scn_stale_timeframe', '1_year');
-        $this->assertEquals('1_year', get_option('scn_stale_timeframe'));
+        update_option('scntfy_stale_timeframe', '1_year');
+        $this->assertEquals('1_year', get_option('scntfy_stale_timeframe'));
 
-        update_option('scn_enable_email_notifications', '0');
-        $this->assertEquals('0', get_option('scn_enable_email_notifications'));
+        update_option('scntfy_enable_email_notifications', '0');
+        $this->assertEquals('0', get_option('scntfy_enable_email_notifications'));
 
-        update_option('scn_notification_email', 'some-admin@somedomain.com');
-        $this->assertEquals('some-admin@somedomain.com', get_option('scn_notification_email'));
+        update_option('scntfy_notification_email', 'some-admin@somedomain.com');
+        $this->assertEquals('some-admin@somedomain.com', get_option('scntfy_notification_email'));
     }
 }
