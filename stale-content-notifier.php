@@ -227,10 +227,23 @@ function scn_display_tools_page()
         // Use nonces for security
         check_admin_referer('scn_save_settings');
 
-        // Save the settings
-        update_option('scn_days_until_stale', intval($_POST['scn_days_until_stale']));
-        update_option('scn_enable_email_notifications', isset($_POST['scn_enable_email_notifications']) ? '1' : '0');
-        update_option('scn_notification_email', sanitize_email($_POST['scn_notification_email']));
+        // Validate and save the settings
+        if (isset($_POST['scn_days_until_stale'])) {
+            $days_until_stale = sanitize_text_field($_POST['scn_days_until_stale']);
+            if (is_numeric($days_until_stale)) {
+                update_option('scn_days_until_stale', intval($days_until_stale));
+            }
+        }
+
+        $enable_email_notifications = isset( $_POST['scn_enable_email_notifications'] ) ? '1' : '0';
+        update_option( 'scn_enable_email_notifications', $enable_email_notifications );        
+
+        if (isset($_POST['scn_notification_email'])) {
+            $notification_email = sanitize_email($_POST['scn_notification_email']);
+            if (is_email($notification_email)) {
+                update_option('scn_notification_email', $notification_email);
+            }
+        }
 
         // Output an admin notice on successful save
         echo '<div class="updated"><p><strong>Settings saved.</strong></p></div>';
@@ -242,7 +255,7 @@ function scn_display_tools_page()
     $notification_email = get_option('scn_notification_email', get_option('admin_email'));
 
     // Display the settings form
-    $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'stale_content';
+    $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'stale_content';
 ?>
     <div class="wrap">
         <h2>Stale Content Notifier</h2>
