@@ -235,8 +235,8 @@ function scn_display_tools_page()
             }
         }
 
-        $enable_email_notifications = isset( $_POST['scn_enable_email_notifications'] ) ? '1' : '0';
-        update_option( 'scn_enable_email_notifications', $enable_email_notifications );        
+        $enable_email_notifications = isset($_POST['scn_enable_email_notifications']) ? '1' : '0';
+        update_option('scn_enable_email_notifications', $enable_email_notifications);
 
         if (isset($_POST['scn_notification_email'])) {
             $notification_email = sanitize_email($_POST['scn_notification_email']);
