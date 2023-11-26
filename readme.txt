@@ -4,7 +4,7 @@ Tags: content, notification, stale-content, posts, maintenance
 Requires at least: 4.5
 Tested up to: 6.3.1
 Requires PHP: 5.6
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,10 +38,10 @@ Yes, you can specify the email address that will receive notifications for stale
 
 == Changelog ==
 
-= 0.1.0 =
+= 1.0.0 =
 * Initial release with basic notification functionality.
 
 == Upgrade Notice ==
 
-= 0.1.0 =
+= 1.0.0 =
 This is the first release of the Stale Content Notifier plugin. Install and help maintain fresh content on your website!

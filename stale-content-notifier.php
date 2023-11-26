@@ -4,9 +4,9 @@
  * Plugin Name:     Stale Content Notifier
  * Description:     Automatically notify authors and administrators about posts that haven't been updated for a specified period.
  * Plugin URI:      https://plugin-bakery.com/stale-content-notifier
- * Author:          Alen Ribic
+ * Author:          Plugin Bakery
  * Author URI:      https://plugin-bakery.com
- * Version:         0.1.0
+ * Version:         1.0.0
  * License:         GPL2 or later
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  * 
